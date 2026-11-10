@@ -120,5 +120,104 @@ html
   </main>
 
   <footer>Hecho para estudiantes · ¡Cada pequeño avance cuenta!</footer>
-</body>
+</body>```html
+<section id="tareas" style="max-width:700px;margin:30px auto;padding:20px;border-radius:16px;background:#f1f5f9;font-family:Arial,sans-serif;color:#172033">
+  <h2>📚 Organizador de tareas</h2>
+  <p>Anota tus trabajos y fechas de entrega.</p>
+
+  <form id="formularioTarea" style="display:flex;flex-wrap:wrap;gap:8px">
+    <input id="nombreTarea" type="text" placeholder="¿Qué tienes que hacer?" required
+      style="flex:1;min-width:180px;padding:12px;border:1px solid #cbd5e1;border-radius:8px">
+    <input id="fechaTarea" type="date" required
+      style="padding:12px;border:1px solid #cbd5e1;border-radius:8px">
+    <button style="padding:12px 16px;border:0;border-radius:8px;background:#2563eb;color:white">
+      Agregar tarea
+    </button>
+  </form>
+
+  <p id="mensajeTareas" aria-live="polite"></p>
+  <ul id="listaTareas" style="padding:0;list-style:none"></ul>
+</section>
+
+<script>
+(() => {
+  const formulario = document.getElementById("formularioTarea");
+  const nombre = document.getElementById("nombreTarea");
+  const fecha = document.getElementById("fechaTarea");
+  const lista = document.getElementById("listaTareas");
+  const mensaje = document.getElementById("mensajeTareas");
+  const clave = "organizadorTareasEstudiantes";
+
+  let tareas = [];
+  try {
+    tareas = JSON.parse(localStorage.getItem(clave) || "[]");
+    if (!Array.isArray(tareas)) tareas = [];
+  } catch {
+    tareas = [];
+  }
+
+  function guardar() {
+    try {
+      localStorage.setItem(clave, JSON.stringify(tareas));
+      mensaje.textContent = "Tareas guardadas en este dispositivo.";
+    } catch {
+      mensaje.textContent = "No se pudieron guardar las tareas en este navegador.";
+    }
+  }
+
+  function mostrar() {
+    lista.replaceChildren();
+
+    if (tareas.length === 0) {
+      const vacio = document.createElement("li");
+      vacio.textContent = "Todavía no hay tareas. ¡Agrega la primera!";
+      lista.appendChild(vacio);
+      return;
+    }
+
+    tareas.forEach((tarea, indice) => {
+      const item = document.createElement("li");
+      item.style.cssText = "display:flex;align-items:center;gap:10px;padding:10px;margin-top:8px;background:white;border-radius:8px";
+
+      const casilla = document.createElement("input");
+      casilla.type = "checkbox";
+      casilla.checked = tarea.hecha;
+      casilla.setAttribute("aria-label", "Marcar tarea como terminada");
+      casilla.addEventListener("change", () => {
+        tareas[indice].hecha = casilla.checked;
+        guardar();
+        mostrar();
+      });
+
+      const texto = document.createElement("span");
+      texto.style.flex = "1";
+      texto.textContent = tarea.nombre + " — Entrega: " + tarea.fecha;
+      if (tarea.hecha) texto.style.textDecoration = "line-through";
+
+      const borrar = document.createElement("button");
+      borrar.type = "button";
+      borrar.textContent = "Eliminar";
+      borrar.addEventListener("click", () => {
+        tareas.splice(indice, 1);
+        guardar();
+        mostrar();
+      });
+
+      item.append(casilla, texto, borrar);
+      lista.appendChild(item);
+    });
+  }
+
+  formulario.addEventListener("submit", (evento) => {
+    evento.preventDefault();
+    tareas.push({ nombre: nombre.value.trim(), fecha: fecha.value, hecha: false });
+    guardar();
+    formulario.reset();
+    mostrar();
+    nombre.focus();
+  });
+
+  mostrar();
+})();
+                 </script>
 </html>
