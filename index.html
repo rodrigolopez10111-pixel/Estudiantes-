@@ -1,1 +1,124 @@
+html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estudia Mejor</title>
+  <style>
+    * { box-sizing: border-box; }
 
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #203047;
+      background: #f4f7fb;
+    }
+
+    header {
+      padding: 22px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+    }
+
+    .logo { color: #4968e8; font-size: 1.4rem; font-weight: bold; }
+    nav a { margin-left: 20px; color: #40506a; text-decoration: none; }
+
+    .hero {
+      padding: 70px 8%;
+      background: linear-gradient(120deg, #e7edff, #f1f7ff);
+    }
+
+    .hero h1 { max-width: 600px; font-size: 2.8rem; margin-bottom: 12px; }
+    .hero p { max-width: 540px; line-height: 1.6; color: #52627a; }
+
+    .boton {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 20px;
+      border-radius: 9px;
+      color: white;
+      background: #4968e8;
+      text-decoration: none;
+    }
+
+    main { padding: 40px 8%; }
+    h2 { margin-bottom: 20px; }
+
+    .tarjetas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .tarjeta {
+      padding: 22px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 5px 18px #1c355010;
+    }
+
+    .tarjeta h3 { margin-top: 0; color: #4968e8; }
+    .tarjeta p { color: #5c6b80; line-height: 1.5; }
+
+    footer {
+      padding: 22px;
+      text-align: center;
+      color: #68768a;
+      background: white;
+    }
+
+    @media (max-width: 600px) {
+      header { align-items: flex-start; gap: 14px; flex-direction: column; }
+      nav a { margin: 0 14px 0 0; }
+      .hero h1 { font-size: 2.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">📘 Estudia Mejor</div>
+    <nav>
+      <a href="#herramientas">Herramientas</a>
+      <a href="#consejos">Consejos</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Aprender puede ser más fácil.</h1>
+    <p>Encuentra ideas y herramientas para organizar tus tareas, estudiar con más enfoque y alcanzar tus metas.</p>
+    <a class="boton" href="#herramientas">Explorar recursos</a>
+  </section>
+
+  <main>
+    <section id="herramientas">
+      <h2>Herramientas para ti</h2>
+      <div class="tarjetas">
+        <article class="tarjeta">
+          <h3>🗓️ Organiza tu semana</h3>
+          <p>Anota tus tareas y divide los trabajos grandes en pasos pequeños.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>⏱️ Estudia por bloques</h3>
+          <p>Prueba estudiar 25 minutos y descansar 5 antes de continuar.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>📝 Toma buenos apuntes</h3>
+          <p>Escribe las ideas principales con tus propias palabras y añade ejemplos.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="consejos" style="margin-top: 42px;">
+      <h2>Un consejo para hoy</h2>
+      <div class="tarjeta">
+        <p>Antes de empezar, elige una sola tarea importante. Terminarla te dará impulso para seguir.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>Hecho para estudiantes · ¡Cada pequeño avance cuenta!</footer>
+</body>
+</html>
