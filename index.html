@@ -219,5 +219,179 @@ html
 
   mostrar();
 })();
-                 </script>
+                 </script>`html
+<button id="activarAvisos" type="button">Activar avisos de tareas</button>
+
+<script>
+if ("Notification" in window) {
+  document.getElementById("activarAvisos").addEventListener("click", async () => {
+    const permiso = await Notification.requestPermission();
+    alert(permiso === "granted"
+      ? "Avisos activados. Deja la página abierta para recibirlos."
+      : "No se permitió enviar avisos.");
+  });
+
+  function revisarTareas() {
+    if (Notification.permission !== "granted") return;
+
+    let tareas = [];
+    try {
+      tareas = JSON.parse(localStorage.getItem("organizadorTareasEstudiantes") || "[]");
+    } catch {}
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    tareas.forEach((tarea, i) => {
+      if (!tarea.hecha && tarea.fecha) {
+        const entrega = new Date(tarea.fecha + "T00:00:00");
+        const dias = Math.round((entrega - hoy) / 86400000);
+        const clave = "avisoTarea_" + i + "_" + tarea.fecha;
+
+        if (dias === 1 && !localStorage.getItem(clave)) {
+          new Notification("Entrega mañana", { body: tarea.nombre });
+          localStorage.setItem(clave, "enviado");
+        }
+      }
+    });
+  }
+
+  revisarTareas();
+  setInterval(revisarTareas, 60 * 60 * 1000);
+} else {
+  document.getElementById("activarAvisos").hidden = true;
+}
+</script>```html
+<div class="calculadora">
+  <input id="calc-pantalla" type="text" value="0" readonly aria-label="Pantalla de la calculadora">
+
+  <div class="calc-botones">
+    <button data-accion="limpiar">C</button>
+    <button data-accion="borrar">←</button>
+    <button data-operador="/">÷</button>
+    <button data-operador="*">×</button>
+
+    <button data-numero="7">7</button>
+    <button data-numero="8">8</button>
+    <button data-numero="9">9</button>
+    <button data-operador="-">−</button>
+
+    <button data-numero="4">4</button>
+    <button data-numero="5">5</button>
+    <button data-numero="6">6</button>
+    <button data-operador="+">+</button>
+
+    <button data-numero="1">1</button>
+    <button data-numero="2">2</button>
+    <button data-numero="3">3</button>
+    <button class="calc-igual" data-accion="calcular">=</button>
+
+    <button class="calc-cero" data-numero="0">0</button>
+    <button data-accion="decimal">.</button>
+  </div>
+</div>
+
+<style>
+  .calculadora {
+    width: 240px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #222;
+    font-family: Arial, sans-serif;
+  }
+
+  #calc-pantalla {
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 12px;
+    font-size: 24px;
+    text-align: right;
+  }
+
+  .calc-botones {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .calc-botones button {
+    padding: 12px;
+    border: 0;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .calc-igual { grid-row: span 2; }
+  .calc-cero { grid-column: span 2; }
+</style>
+
+<script>
+  (() => {
+    const pantalla = document.getElementById("calc-pantalla");
+    const botones = document.querySelector(".calculadora .calc-botones");
+
+    let valorActual = "0";
+    let valorAnterior = null;
+    let operador = null;
+    let iniciarNuevo = false;
+
+    function actualizar() {
+      pantalla.value = valorActual;
+    }
+
+    botones.addEventListener("click", (evento) => {
+      const boton = evento.target.closest("button");
+      if (!boton) return;
+
+      if (boton.dataset.numero !== undefined) {
+        valorActual = iniciarNuevo || valorActual === "0"
+          ? boton.dataset.numero
+          : valorActual + boton.dataset.numero;
+        iniciarNuevo = false;
+      } else if (boton.dataset.accion === "decimal") {
+        if (iniciarNuevo) {
+          valorActual = "0";
+          iniciarNuevo = false;
+        }
+        if (!valorActual.includes(".")) valorActual += ".";
+      } else if (boton.dataset.accion === "limpiar") {
+        valorActual = "0";
+        valorAnterior = null;
+        operador = null;
+        iniciarNuevo = false;
+      } else if (boton.dataset.accion === "borrar") {
+        valorActual = valorActual.length > 1 ? valorActual.slice(0, -1) : "0";
+      } else if (boton.dataset.operador) {
+        valorAnterior = Number(valorActual);
+        operador = boton.dataset.operador;
+        iniciarNuevo = true;
+      } else if (boton.dataset.accion === "calcular" && operador) {
+        const segundoValor = Number(valorActual);
+        let resultado;
+
+        if (operador === "+") resultado = valorAnterior + segundoValor;
+        if (operador === "-") resultado = valorAnterior - segundoValor;
+        if (operador === "*") resultado = valorAnterior * segundoValor;
+        if (operador === "/") {
+          if (segundoValor === 0) {
+            valorActual = "Error";
+            operador = null;
+            actualizar();
+            return;
+          }
+          resultado = valorAnterior / segundoValor;
+        }
+
+        valorActual = String(Number(resultado.toFixed(10)));
+        operador = null;
+        iniciarNuevo = true;
+      }
+
+      actualizar();
+    });
+  })();
+</script>
+```
 </html>
